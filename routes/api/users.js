@@ -9,9 +9,10 @@ const router = require('express').Router()
 const controller = require('../../controllers/UserController')
 
 const checkBodyIsEmpty = require('../../helpers/checkBodyIsEmpty') 
+const verifyToken = require('../../middlewares/verifyToken')
 
 // router.get("/", controller.get);
-// router.get("/:user_id", controller.getById);
+router.post("/", verifyToken, controller.getUser);
 // router.post("/", checkBodyIsEmpty, controller.save);
 // router.delete("/:user_id", controller.delete);
 

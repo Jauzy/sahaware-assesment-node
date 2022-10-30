@@ -7,6 +7,23 @@ const bcrypt = require("bcrypt")
 const saltRounds = 10;
 
 class UserController {
+    getUser = (req, res) => {
+        models.users.findOne({
+            where: {
+                user_id: req.user.uid
+            }
+        })
+        .then(user => {
+            if (!user) {
+                return res.status(404).send(error.notFound)
+            }
+            res.send(user)
+        })
+        .catch(err => {
+            res.status(500).send(error.internalServerError)
+        })
+    }
+
     login = (req, res) => {
         const { email, password } = req.body
         models.users.findOne({

@@ -1,6 +1,6 @@
 require('dotenv').config()
+const db = require("../../models");
 const error = require('../errors')
-
 class BasicCrud {
     constructor(model){
         this.Model = model
@@ -13,7 +13,7 @@ class BasicCrud {
         let where = {}
         const {size, page, ...search} = req.query
         const limit = size ? size : undefined
-        const offset = page ? (page * size) - 1 : undefined
+        const offset = page ? ((page - 1) * size) : undefined
 
         if(search.search) where = {
             ar_title : search.search
@@ -31,11 +31,23 @@ class BasicCrud {
     }  
 
     searchById = async (data) => {
-        const response = await this.Model.findOne({
-            where: {
-                [this.pk]: data[this.pk]
-            }
-        })
+        let response
+        if(this.pk == 'ar_id'){
+            response = await this.Model.findOne({
+                include: [
+                    { model: db.article_categories },
+                ],
+                where: {
+                    [this.pk]: data[this.pk]
+                }
+            })
+        } else {
+            response = await this.Model.findOne({
+                where: {
+                    [this.pk]: data[this.pk]
+                }
+            })
+        }
         return response
     }
     
